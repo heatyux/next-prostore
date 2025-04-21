@@ -1,0 +1,29 @@
+{
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "stylelint.validate": ["css", "scss"],
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "editor.formatOnSave": true,
+  // 关闭JS代码校验  当保存的时候,使用eslint自动帮助我们修复错误
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always"
+    // "source.organizeImports": "explicit"
+  },
+  // 使用prettier格式化代码
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
