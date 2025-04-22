@@ -1,3 +1,5 @@
+import ProductCard from './product-card'
+
 const ProductList = ({ data, title }: { data: any; title?: string }) => {
   return (
     <div className="my-10">
@@ -6,7 +8,7 @@ const ProductList = ({ data, title }: { data: any; title?: string }) => {
         <div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {data.map((product: any) => (
-              <div key={product.slug}>{product.name}</div>
+              <ProductCard key={product.slug} product={product} />
             ))}
           </div>
         </div>
