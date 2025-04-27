@@ -1,6 +1,6 @@
 'use server'
 
-import { signIn } from '@/auth'
+import { signIn, signOut } from '@/auth'
 import { signInFormSchema } from '../validator'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
@@ -25,10 +25,14 @@ export async function signInWithCredentials(
     if (isRedirectError(error)) {
       throw error
     }
+    return {
+      success: false,
+      message: 'Invalid email or password',
+    }
   }
 }
 
 // Sign the user out
-export async function signOut() {
+export async function signOutUser() {
   await signOut()
 }
