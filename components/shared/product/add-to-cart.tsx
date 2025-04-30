@@ -20,7 +20,7 @@ const AddToCart = ({ item }: AddToCartProps) => {
     }
 
     // Handle success add to cart
-    toast(`${item.name} added to the cart`, {
+    toast(res.message, {
       description: (
         <Link href="/cart" className="hover:underline">
           Go to cart

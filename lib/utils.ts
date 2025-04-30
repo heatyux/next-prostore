@@ -43,3 +43,15 @@ export function formatError(error: unknown): string {
 
   return ''
 }
+
+// Round to 2 decimal places
+export const round2 = (value: number | string) => {
+  if (typeof value === 'number') {
+    // avoid rounding
+    return Math.round((value + Number.EPSILON) * 100) / 100
+  } else if (typeof value === 'string') {
+    return Math.round((Number(value) + Number.EPSILON) * 100) / 100
+  } else {
+    throw new Error('value is not a number or a string')
+  }
+}
