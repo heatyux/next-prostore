@@ -125,7 +125,6 @@ const CartTable = ({ cart }: CartTableProps) => {
               </div>
               <Button
                 disabled={isPending}
-                variant="outline"
                 className="w-full"
                 onClick={() =>
                   startTransition(() => {

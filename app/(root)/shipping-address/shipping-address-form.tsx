@@ -2,10 +2,9 @@
 
 import { shippingAddressSchema } from '@/lib/validator'
 import { ShippingAddress } from '@/types'
-import { useForm } from 'react-hook-form'
+import { ControllerRenderProps, SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ControllerRenderProps } from 'react-hook-form'
 import { shippingAddressDefaultValues } from '@/lib/constants'
 import { useTransition } from 'react'
 import {
@@ -19,6 +18,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Loader } from 'lucide-react'
+import { updateUserAddress } from '@/lib/actions/user.actions'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 type ShippingAddressFormProps = {
   address: ShippingAddress
@@ -30,10 +32,22 @@ const ShippingAddressForm = ({ address }: ShippingAddressFormProps) => {
     defaultValues: address || shippingAddressDefaultValues,
   })
 
+  const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
-  const onSubmit = () => {
-    return
+  const onSubmit: SubmitHandler<z.infer<typeof shippingAddressSchema>> = (
+    values,
+  ) => {
+    startTransition(async () => {
+      const res = await updateUserAddress(values)
+
+      if (!res.success) {
+        toast.error(res.message)
+        return
+      }
+
+      router.push('/payment-method')
+    })
   }
 
   return (
@@ -154,7 +168,8 @@ const ShippingAddressForm = ({ address }: ShippingAddressFormProps) => {
                   <Loader className="h-4 w-4 animate-spin" />
                 ) : (
                   <ArrowRight className="h-4 w-4" />
-                )}
+                )}{' '}
+                Continue
               </Button>
             </div>
           </form>
