@@ -5,6 +5,7 @@ import { prisma } from '@/db/prisma'
 import { compareSync } from 'bcrypt-ts-edge'
 import { AdapterUser } from '@auth/core/adapters'
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 
 type SessionWithUser = AdapterUser & {
   role: string
@@ -79,7 +80,32 @@ export const config = {
     async jwt({ token, user, trigger, session }) {
       // Assign user fields to token
       if (user) {
+        token.id = user.id
         token.role = (user as SessionWithUser).role
+
+        if (trigger === 'signIn' || trigger === 'signUp') {
+          const cookiesObject = await cookies()
+          const sessionCartId = cookiesObject.get('sessionCartId')?.value
+
+          if (sessionCartId) {
+            const sessionCart = await prisma.cart.findFirst({
+              where: { sessionCartId },
+            })
+
+            if (sessionCart) {
+              // Overwrite any existing user cart
+              await prisma.cart.deleteMany({
+                where: { userId: user.id },
+              })
+
+              // Assign the guest cart to the loggin-in user
+              await prisma.cart.update({
+                where: { id: sessionCart.id },
+                data: { userId: user.id },
+              })
+            }
+          }
+        }
 
         // If user has no name, use email as their default name
         if (user.name === 'NO_NAME') {
