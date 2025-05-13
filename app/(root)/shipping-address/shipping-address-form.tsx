@@ -21,13 +21,14 @@ import { ArrowRight, Loader } from 'lucide-react'
 import { updateUserAddress } from '@/lib/actions/user.actions'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import CheckoutSteps from '@/components/shared/checkout-steps'
 
 type ShippingAddressFormProps = {
   address: ShippingAddress
 }
 
 const ShippingAddressForm = ({ address }: ShippingAddressFormProps) => {
-  const form = useForm<z.infer<typeof shippingAddressSchema>>({
+  const form = useForm({
     resolver: zodResolver(shippingAddressSchema),
     defaultValues: address || shippingAddressDefaultValues,
   })
@@ -52,6 +53,7 @@ const ShippingAddressForm = ({ address }: ShippingAddressFormProps) => {
 
   return (
     <>
+      <CheckoutSteps current={1} />
       <div className="mx-auto max-w-md space-y-4">
         <h1 className="h2-bold mt-4">Shipping Address</h1>
         <p className="text-muted-foreground text-sm">
