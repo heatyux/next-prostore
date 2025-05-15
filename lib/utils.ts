@@ -72,3 +72,54 @@ export const formatCurrency = (amount: number | string | null) => {
     return 'NaN'
   }
 }
+
+// Shorten UUID
+export function formatId(id: string) {
+  return `..${id.substring(id.length - 6)}`
+}
+
+// Format date and times
+export function formatDateTime(dateString: Date) {
+  const dateTimeOpotions: Intl.DateTimeFormatOptions = {
+    month: 'short', // abbreviated month name (e.g., 'Oct')
+    year: 'numeric', // abbreviated year (e.g., '2025')
+    day: 'numeric', // numeric day of the month (e.g., '15')
+    hour: 'numeric', // numeric hour (24-hour clock) (e.g., '14')
+    minute: 'numeric', // numeric minute (e.g., '30')
+    hour12: true, // use 12-hour clock (true) or 24-hour clock (false)
+  }
+
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    weekday: 'short', // abbreviated weekday name (e.g., 'Mon')
+    month: 'short', // abbreviated month name (e.g., 'Oct')
+    year: 'numeric', // abbreviated year (e.g., '2025')
+    day: 'numeric', // numeric day of the month (e.g., '15')
+  }
+
+  const timeOptions: Intl.DateTimeFormatOptions = {
+    hour: 'numeric', // numeric hour (24-hour clock) (e.g., '14')
+    minute: 'numeric', // numeric minute (e.g., '30')
+    hour12: true, // use 12-hour clock (true) or 24-hour clock (false)
+  }
+
+  const formatDateTime: string = new Date(dateString).toLocaleString(
+    'en-US',
+    dateTimeOpotions,
+  )
+
+  const formatDate: string = new Date(dateString).toLocaleString(
+    'en-US',
+    dateOptions,
+  )
+
+  const formatTime: string = new Date(dateString).toLocaleString(
+    'en-US',
+    timeOptions,
+  )
+
+  return {
+    dateTime: formatDateTime,
+    dateOnly: formatDate,
+    timeOnly: formatTime,
+  }
+}
