@@ -177,15 +177,18 @@ const OrderDetailsTable = ({
                 <div>Total</div>
                 <div>{formatCurrency(totalPrice)}</div>
               </div>
-              <div>
-                <PayPalScriptProvider options={{ clientId: paypalClientId }}>
-                  <PrintLoadingState />
-                  <PayPalButtons
-                    createOrder={handleCreatePayPalOrder}
-                    onApprove={handleApprovePayPalOrder}
-                  />
-                </PayPalScriptProvider>
-              </div>
+              {/* PayPal Payment */}
+              {!isPaid && paymentMethod === 'PayPal' && (
+                <div>
+                  <PayPalScriptProvider options={{ clientId: paypalClientId }}>
+                    <PrintLoadingState />
+                    <PayPalButtons
+                      createOrder={handleCreatePayPalOrder}
+                      onApprove={handleApprovePayPalOrder}
+                    />
+                  </PayPalScriptProvider>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
