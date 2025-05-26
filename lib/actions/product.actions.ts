@@ -2,7 +2,7 @@
 
 import { prisma } from '@/db/prisma'
 import { convertToPlainObject } from '../utils'
-import { LATEST_PRODUCT_LIMIT } from '../constants'
+import { LATEST_PRODUCT_LIMIT, PAGE_SIZE } from '../constants'
 
 // Get the latest products
 export async function getLatestProducts() {
@@ -21,4 +21,29 @@ export async function getProductBySlug(slug: string) {
   return await prisma.product.findFirst({
     where: { slug },
   })
+}
+
+// Get all products
+export async function getAllProducts({
+  query,
+  category,
+  limit = PAGE_SIZE,
+  page,
+}: {
+  query: string
+  category: string
+  limit?: number
+  page: number
+}) {
+  const data = await prisma.product.findMany({
+    take: limit,
+    skip: (page - 1) * limit,
+  })
+
+  const dataCount = await prisma.product.count()
+
+  return {
+    data,
+    totalPage: Math.ceil(dataCount / limit),
+  }
 }
