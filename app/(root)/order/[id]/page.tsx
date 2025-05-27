@@ -9,7 +9,7 @@ type OrderDetailPageProps = {
   params: Promise<{ id: string }>
 }
 
-export const generateMetadata: Metadata = {
+export const metadata: Metadata = {
   title: 'Order Detail',
 }
 
