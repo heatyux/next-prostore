@@ -1,8 +1,11 @@
 'use server'
 
 import { prisma } from '@/db/prisma'
-import { convertToPlainObject } from '../utils'
+import { convertToPlainObject, formatError } from '../utils'
 import { LATEST_PRODUCT_LIMIT, PAGE_SIZE } from '../constants'
+import { revalidatePath } from 'next/cache'
+import { z } from 'zod'
+import { insertProductSchema, updateProductSchema } from '../validator'
 
 // Get the latest products
 export async function getLatestProducts() {
@@ -45,5 +48,89 @@ export async function getAllProducts({
   return {
     data,
     totalPage: Math.ceil(dataCount / limit),
+  }
+}
+
+// Delete a product
+export async function deleteProduct(id: string) {
+  try {
+    const productExists = await prisma.product.findFirst({
+      where: { id },
+    })
+
+    if (!productExists) {
+      throw new Error('Product not found')
+    }
+
+    await prisma.product.delete({
+      where: { id },
+    })
+
+    revalidatePath('/admin/products')
+
+    return {
+      success: true,
+      message: 'Product deleted successfully',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    }
+  }
+}
+
+// Create a product
+export async function createProduct(data: z.infer<typeof insertProductSchema>) {
+  try {
+    // Validate and create product
+    const product = insertProductSchema.parse(data)
+    await prisma.product.create({
+      data: product,
+    })
+
+    revalidatePath('/admin/products')
+
+    return {
+      success: true,
+      message: 'Product created successfully',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    }
+  }
+}
+
+// Update a product
+export async function updateProduct(data: z.infer<typeof updateProductSchema>) {
+  try {
+    // Validate and update product
+    const product = updateProductSchema.parse(data)
+    const productExists = await prisma.product.findFirst({
+      where: { id: product.id },
+    })
+
+    if (!productExists) {
+      throw new Error('Product not found')
+    }
+
+    await prisma.product.update({
+      where: { id: product.id },
+      data: product,
+    })
+
+    revalidatePath('/admin/products')
+
+    return {
+      success: true,
+      message: 'Product updated successfully',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    }
   }
 }
