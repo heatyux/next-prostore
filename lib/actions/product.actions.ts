@@ -39,6 +39,7 @@ export async function getAllProducts({
   page: number
 }) {
   const data = await prisma.product.findMany({
+    orderBy: { createdAt: 'desc' },
     take: limit,
     skip: (page - 1) * limit,
   })
