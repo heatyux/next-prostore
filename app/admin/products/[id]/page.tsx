@@ -1,4 +1,4 @@
-import ProductForm from '@/components/shared/admin/product-form'
+import ProductForm from '@/components/admin/product-form'
 import { getProductById } from '@/lib/actions/product.actions'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'

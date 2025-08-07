@@ -1,4 +1,4 @@
-import ProductForm from '@/components/shared/admin/product-form'
+import ProductForm from '@/components/admin/product-form'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
