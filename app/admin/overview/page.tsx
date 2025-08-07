@@ -41,7 +41,9 @@ const AdminDashboardPage = async () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {formatCurrency(summary.totalSales._sum.totalPrice!.toString())}
+              {formatCurrency(
+                summary.totalSales._sum.totalPrice?.toString() || 0,
+              )}
             </div>
           </CardContent>
         </Card>
