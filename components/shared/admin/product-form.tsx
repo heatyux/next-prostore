@@ -24,6 +24,7 @@ import { toast } from 'sonner'
 import { Card, CardContent } from '@/components/ui/card'
 import Image from 'next/image'
 import { UploadButton } from '@/lib/uploadthing'
+import { Checkbox } from '@/components/ui/checkbox'
 
 type ProductFormProps = {
   type: 'Create' | 'Update'
@@ -71,6 +72,8 @@ const ProductForm = ({ type, product, productId }: ProductFormProps) => {
   }
 
   const images = form.watch('images')
+  const isFeatured = form.watch('isFeatured')
+  const banner = form.watch('banner')
 
   return (
     <Form {...form}>
@@ -228,7 +231,50 @@ const ProductForm = ({ type, product, productId }: ProductFormProps) => {
             )}
           />
         </div>
-        <div className="upload-field">{/* Is Featured */}</div>
+        <div className="upload-field">
+          {/* Is Featured */}
+          Featured Product
+          <Card>
+            <CardContent className="mt-2 space-y-2">
+              <FormField
+                control={form.control}
+                name="isFeatured"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>Is Featured?</FormLabel>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {isFeatured && banner && (
+                <Image
+                  src={banner}
+                  alt="banner image"
+                  width={1920}
+                  height={680}
+                  className="w-full rounded-md object-cover object-center"
+                />
+              )}
+              {isFeatured && !banner && (
+                <UploadButton
+                  endpoint="imageUploader"
+                  onClientUploadComplete={(res: { url: string }[]) => {
+                    form.setValue('banner', res[0].url)
+                  }}
+                  onUploadError={(error: Error) => {
+                    toast.error(`ERROR ${error.message}`)
+                  }}
+                />
+              )}
+            </CardContent>
+          </Card>
+        </div>
         <div>
           {/* Description */}
           <FormField
