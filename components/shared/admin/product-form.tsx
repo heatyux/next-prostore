@@ -223,6 +223,7 @@ const ProductForm = ({ type, product, productId }: ProductFormProps) => {
                     </div>
                   </CardContent>
                 </Card>
+                <FormMessage />
               </FormItem>
             )}
           />
