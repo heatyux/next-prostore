@@ -1,0 +1,78 @@
+import { deleteUser, getAllUsers } from '@/lib/actions/user.actions'
+import { Metadata } from 'next'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { formatId } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import Pagination from '@/components/shared/pagination'
+import DeleteDialog from '@/components/shared/delete-dialog'
+import { Badge } from '@/components/ui/badge'
+
+export const metadata: Metadata = {
+  title: 'Admin Users',
+}
+
+interface AdminUsersPageProps {
+  searchParams: Promise<{
+    page: string
+  }>
+}
+
+const AdminUsersPage = async ({ searchParams }: AdminUsersPageProps) => {
+  const { page = '1' } = await searchParams
+
+  const users = await getAllUsers({ page: Number(page) })
+
+  return (
+    <div className="space-y-2">
+      <h1 className="h2-bold">Users</h1>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>NAME</TableHead>
+              <TableHead>EMAIL</TableHead>
+              <TableHead>ROLE</TableHead>
+              <TableHead>ACTIONS</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {users.data.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{formatId(user.id)}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  {user.role === 'user' ? (
+                    <Badge variant="secondary">User</Badge>
+                  ) : (
+                    <Badge variant="default">Admin</Badge>
+                  )}
+                </TableCell>
+                <TableCell className="flex gap-1">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/admin/users/${user.id}`}>Edit</Link>
+                  </Button>
+                  <DeleteDialog id={user.id} action={deleteUser} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        {users.totalPage > 1 && (
+          <Pagination page={Number(page)} totalPages={users.totalPage} />
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default AdminUsersPage
