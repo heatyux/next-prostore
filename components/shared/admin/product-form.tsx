@@ -21,6 +21,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { createProduct, updateProduct } from '@/lib/actions/product.actions'
 import { toast } from 'sonner'
+import { Card, CardContent } from '@/components/ui/card'
+import Image from 'next/image'
+import { UploadButton } from '@/lib/uploadthing'
 
 type ProductFormProps = {
   type: 'Create' | 'Update'
@@ -68,6 +71,8 @@ const ProductForm = ({ type, product, productId }: ProductFormProps) => {
     }
   }
 
+  const images = form.watch('images')
+
   return (
     <Form {...form}>
       <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
@@ -102,6 +107,7 @@ const ProductForm = ({ type, product, productId }: ProductFormProps) => {
                     />
                     {/* Generate Button */}
                     <Button
+                      type="button"
                       className="mt-2 bg-gray-500 px-4 py-1 text-white hover:bg-gray-600"
                       onClick={() => {
                         form.setValue(
@@ -183,7 +189,45 @@ const ProductForm = ({ type, product, productId }: ProductFormProps) => {
             )}
           />
         </div>
-        <div className="flex flex-col gap-5 md:flex-row">{/* Images */}</div>
+        <div className="flex flex-col gap-5 md:flex-row">
+          {/* Images */}
+          <FormField
+            control={form.control}
+            name="images"
+            render={() => (
+              <FormItem className="w-full">
+                <FormLabel>Images</FormLabel>
+                <Card>
+                  <CardContent className="mt-2 min-h-48 space-y-2">
+                    <div className="flex-start space-x-2">
+                      {images.map((image) => (
+                        <Image
+                          key={image}
+                          src={image}
+                          alt="product image"
+                          width={100}
+                          height={100}
+                          className="h-20 w-20 rounded-sm object-cover object-center"
+                        />
+                      ))}
+                      <FormControl>
+                        <UploadButton
+                          endpoint="imageUploader"
+                          onClientUploadComplete={(res: { url: string }[]) => {
+                            form.setValue('images', [...images, res[0].url])
+                          }}
+                          onUploadError={(error: Error) => {
+                            toast.error(`ERROR ${error.message}`)
+                          }}
+                        />
+                      </FormControl>
+                    </div>
+                  </CardContent>
+                </Card>
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="upload-field">{/* Is Featured */}</div>
         <div>
           {/* Description */}
