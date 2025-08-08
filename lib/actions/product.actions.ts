@@ -61,6 +61,16 @@ export async function getAllProducts({
   }
 }
 
+// Get all categories
+export async function getAllCategories() {
+  const data = await prisma.product.groupBy({
+    by: ['category'],
+    _count: true,
+  })
+
+  return data
+}
+
 // Delete a product
 export async function deleteProduct(id: string) {
   try {
